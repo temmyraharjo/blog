@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using backend.Data;
 
-namespace backend.Interface
+namespace backend.Core
 {
     public abstract class BaseValidator<TInput>
     {

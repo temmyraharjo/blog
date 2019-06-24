@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using backend.Core;
 using backend.Data;
-using backend.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Features.User
