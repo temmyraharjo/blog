@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Okta.AspNetCore;
 using SimpleInjector;
+using OktaWebApiOptions = Okta.AspNet.Abstractions.OktaWebApiOptions;
 
 namespace Blog.Api
 {
@@ -28,6 +30,19 @@ namespace Blog.Api
                 .AddMvcOptions(options =>
                 {
                     options.Filters.Add<CustomExceptionFilterAttribute>();
+                });
+
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = OktaDefaults.ApiAuthenticationScheme;
+                    options.DefaultChallengeScheme = OktaDefaults.ApiAuthenticationScheme;
+                    options.DefaultSignInScheme = OktaDefaults.ApiAuthenticationScheme;
+                })
+                .AddOktaWebApi(new Okta.AspNetCore.OktaWebApiOptions
+                {
+                    OktaDomain = Configuration["Okta:Domain"],
+                    AuthorizationServerId = Configuration["Okta:AuthorizationServerId"],
+                    Audience = Configuration["Okta:Audience"]
                 });
 
             services.AddSimpleInjector(_container, options =>
