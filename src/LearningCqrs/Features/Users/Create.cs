@@ -1,6 +1,7 @@
 ﻿using LearningCqrs.Contracts;
 using LearningCqrs.Core;
 using LearningCqrs.Data;
+using LearningCqrs.Features.TimeZones;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,15 +9,17 @@ namespace LearningCqrs.Features.Users;
 
 public class Create
 {
-    public record CreateUserCommand(string Username, string Password) : IRequest<DocumentCreated>;
+    public record CreateUserCommand(string Username, string Password, Guid? TimeZoneId) : IRequest<DocumentCreated>;
     
     public class CreateUserHandler : IRequestHandler<CreateUserCommand, DocumentCreated>
     {
-        private readonly IGenericRepository<User> _repository;
+        private readonly IRepository<User> _repository;
+        private readonly IMediator _mediator;
 
-        public CreateUserHandler(IGenericRepository<User> repository)
+        public CreateUserHandler(IRepository<User> repository, IMediator mediator)
         {
             _repository = repository;
+            _mediator = mediator;
         }
         
         public async Task<DocumentCreated> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -28,6 +31,12 @@ public class Create
                 var password = passwordHasher.HashPassword(user, request.Password);
                 user.Password = password;
                 user.Username = request.Username;
+
+                var timeZoneId =
+                    user.TimeZoneId = request.TimeZoneId ?? (await _mediator.Send(
+                        new GetTimeZones.GetTimeZonesQuery(null, null, System.TimeZoneInfo.Local.Id),
+                        cancellationToken)).FirstOrDefault()?.Id;
+                user.TimeZoneId = timeZoneId;
 
                 await _repository.CreateAsync(user, cancellationToken);
                 await _repository.SaveChangesAsync(cancellationToken);

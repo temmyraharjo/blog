@@ -248,5 +248,4 @@ ModelManifest.xml
 .idea/
 *.bak
 
-
-Services/Insurgo\.Anvi\.Accounting\.API/appsettings\.json
+*.kdco

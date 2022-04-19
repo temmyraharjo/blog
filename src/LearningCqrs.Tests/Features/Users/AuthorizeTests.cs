@@ -1,6 +1,8 @@
 ﻿using System;
+using LearningCqrs.Data;
 using LearningCqrs.Features.Users;
 using LearningCqrs.Tests.Core;
+using Microsoft.AspNetCore.Identity;
 using Xunit;
 
 namespace LearningCqrs.Tests.Features.Users;
@@ -10,15 +12,21 @@ public class AuthorizeTests : BaseUnitTest
     [Fact]
     public async void Authorize_correct_password()
     {
-        await TruncateTables("users");
-
+        var testContext = GetTestContext();
+        var passwordHasher = new PasswordHasher<User>();
+       
         var username = "User001";
         var password = "Password";
-        var command = new Create.CreateUserCommand(username, password);
-        await Mediator.Send(command);
+        var user = new User
+        {
+            Username = username
+        };
+        user.Password = passwordHasher.HashPassword(user, password);
+        await testContext.DbContext.Users.AddAsync(user);
+        await testContext.DbContext.SaveChangesAsync();
 
         var authorizeCommand = new Authorize.AuthorizeCommand(username, password);
-        var resultAuthorize = await Mediator.Send(authorizeCommand);
+        var resultAuthorize = await testContext.Mediator.Send(authorizeCommand);
         
         Assert.NotNull(resultAuthorize);
     }
@@ -26,15 +34,15 @@ public class AuthorizeTests : BaseUnitTest
     [Fact]
     public async void Authorize_bad_password()
     {
-        await TruncateTables("users");
+        var testContext = GetTestContext();
 
         var username = "User001";
         var password = "Password";
-        var command = new Create.CreateUserCommand(username, password);
-        await Mediator.Send(command);
+        await testContext.DbContext.Users.AddAsync(new User{ Username = username, Password = password});
+        await testContext.DbContext.SaveChangesAsync();
 
         var authorizeCommand = new Authorize.AuthorizeCommand(username, $"{password}wrong");
-        var result = await Assert.ThrowsAsync<InvalidOperationException>(() =>  Mediator.Send(authorizeCommand)) ;
+        var result = await Assert.ThrowsAsync<InvalidOperationException>(() => testContext.Mediator.Send(authorizeCommand)) ;
         
         Assert.Equal("Username or Password is incorrect", result.Message);
     }

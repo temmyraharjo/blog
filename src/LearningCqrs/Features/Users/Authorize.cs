@@ -17,9 +17,9 @@ public class Authorize
 
     public class AuthorizeHandler : IRequestHandler<AuthorizeCommand, string>
     {
-        private readonly IGenericRepository<User> _repository;
+        private readonly IRepository<User> _repository;
 
-        public AuthorizeHandler(IGenericRepository<User> repository)
+        public AuthorizeHandler(IRepository<User> repository)
         {
             _repository = repository;
         }

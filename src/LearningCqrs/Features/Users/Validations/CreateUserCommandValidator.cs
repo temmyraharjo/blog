@@ -7,7 +7,7 @@ namespace LearningCqrs.Features.Users.Validations;
 
 public class CreateUserCommandValidator : AbstractValidator<Create.CreateUserCommand>
 {
-    public CreateUserCommandValidator(IGenericRepository<User> repository)
+    public CreateUserCommandValidator(IRepository<User> repository)
     {
         RuleFor(x => x.Username).NotNull();
         RuleFor(x => x.Password).NotNull();

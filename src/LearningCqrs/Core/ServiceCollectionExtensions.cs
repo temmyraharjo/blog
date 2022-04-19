@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddMediatR(typeof(Program).GetTypeInfo().Assembly);   
         serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(FluentValidationPipelineBehavior<,>));
         serviceCollection.AddHttpContextAccessor();
-        serviceCollection.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
     public static void AddCoreAuthentication(this IServiceCollection serviceCollection)

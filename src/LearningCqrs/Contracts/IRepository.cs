@@ -2,7 +2,7 @@
 
 namespace LearningCqrs.Contracts;
 
-public interface IGenericRepository<TEntity>
+public interface IRepository<TEntity>
     where TEntity : IEntity
 {
     BlogContext Context { get; }

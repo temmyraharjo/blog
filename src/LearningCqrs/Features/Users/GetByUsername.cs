@@ -11,9 +11,9 @@ public class GetByUsername
 
     public class GetByUsernameHandler : IRequestHandler<GetByUsernameQuery, User?>
     {
-        private readonly IGenericRepository<User> _repository;
+        private readonly IRepository<User> _repository;
 
-        public GetByUsernameHandler(IGenericRepository<User> repository)
+        public GetByUsernameHandler(IRepository<User> repository)
         {
             _repository = repository;
         }
