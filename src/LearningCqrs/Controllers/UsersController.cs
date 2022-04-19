@@ -1,6 +1,8 @@
-﻿using LearningCqrs.Core;
+﻿using LearningCqrs.Core.Handler;
+using LearningCqrs.Features.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningCqrs.Controllers;
@@ -19,7 +21,7 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("authenticate")]
-    public async Task<ActionResult> Authenticate([FromBody] Features.Users.Authorize.AuthorizeCommand authorizeCommand,
+    public async Task<ActionResult> Authenticate([FromBody] Authorize.AuthorizeCommand authorizeCommand,
         CancellationToken cancellationToken)
     {
         try
@@ -34,7 +36,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateUser([FromBody] Features.Users.Create.CreateUserCommand createUserCommand,
+    public async Task<ActionResult> CreateUser([FromBody] Create.CreateUserCommand createUserCommand,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(createUserCommand, cancellationToken);
@@ -43,10 +45,19 @@ public class UsersController : ControllerBase
 
     [HttpGet("getbyusername")]
     public async Task<ActionResult> GetUserByUsername(
-        [FromQuery] Features.Users.GetByUsername.GetByUsernameQuery getByUsernameQuery,
+        [FromQuery] GetByUsername.GetByUsernameQuery getByUsernameQuery,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(getByUsernameQuery, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult> PatchUser(Guid id,
+        [FromBody] JsonPatchDocument<Update.UpdateUserCommand> updateUserCommand,
+        CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new UpdateDocument<Update.UpdateUserCommand>(id, updateUserCommand),
+            cancellationToken));
     }
 }

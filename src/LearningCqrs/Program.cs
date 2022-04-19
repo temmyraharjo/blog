@@ -5,9 +5,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCoreDatabase();
 builder.Services.AddCore();
 builder.Services.AddCoreAuthentication();
+builder.Services.AddCoreAutoMapper();
 
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCoreSwaggerGeneration();

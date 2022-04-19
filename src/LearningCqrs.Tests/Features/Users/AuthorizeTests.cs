@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LearningCqrs.Data;
 using LearningCqrs.Features.Users;
 using LearningCqrs.Tests.Core;
@@ -10,7 +11,7 @@ namespace LearningCqrs.Tests.Features.Users;
 public class AuthorizeTests : BaseUnitTest
 {
     [Fact]
-    public async void Authorize_correct_password()
+    public async Task Authorize_correct_password()
     {
         var testContext = GetTestContext();
         var passwordHasher = new PasswordHasher<User>();
@@ -32,7 +33,7 @@ public class AuthorizeTests : BaseUnitTest
     }
     
     [Fact]
-    public async void Authorize_bad_password()
+    public async Task Authorize_bad_password()
     {
         var testContext = GetTestContext();
 

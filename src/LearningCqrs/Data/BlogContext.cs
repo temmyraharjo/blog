@@ -8,11 +8,11 @@ public class BlogContext : DbContext
     public BlogContext(DbContextOptions<BlogContext> options) : base(options)
     {
     }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if(optionsBuilder.IsConfigured) return;
-        
+        if (optionsBuilder.IsConfigured) return;
+
         var connectionString = Configuration.GetConnectionString("BlogConnectionString");
         optionsBuilder.UseSqlServer(connectionString);
     }

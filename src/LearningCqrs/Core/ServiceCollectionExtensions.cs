@@ -63,6 +63,7 @@ public static class ServiceCollectionExtensions
             opt.OperationFilter<AuthResponsesOperationFilter>();
             opt.SchemaFilter<SwaggerIgnoreFilter>();
             opt.OperationFilter<IgnorePropertyFilter>();
+            opt.DocumentFilter<JsonPatchDocumentFilter>();
         });
     }
     
@@ -73,5 +74,10 @@ public static class ServiceCollectionExtensions
             var connectionString = Configuration.GetConnectionString(configurationName);
             options.UseSqlServer(connectionString);
         });
+    }
+
+    public static void AddCoreAutoMapper(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddAutoMapper(typeof(Contracts.IMapper), typeof(Features.Mapper));
     }
 }

@@ -9,13 +9,12 @@ public class CreateUserCommandValidator : AbstractValidator<Create.CreateUserCom
 {
     public CreateUserCommandValidator(IRepository<User> repository)
     {
-        RuleFor(x => x.Username).NotNull();
-        RuleFor(x => x.Password).NotNull();
+        RuleFor(x => x.Username).NotEmpty();
+        RuleFor(x => x.Password).NotEmpty();
         RuleFor(x => x.Username).CustomAsync(async (username, validationContext, cancellationToken) =>
         {
             var exists = await repository.Context.Users.Where(x => x.Username == username)
                 .AnyAsync(cancellationToken);
-
             if (!exists) return;
 
             validationContext.AddFailure($"Username '{username}' is already exist.");

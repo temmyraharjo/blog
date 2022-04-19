@@ -17,6 +17,8 @@ public class TestContext
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddCore();
         serviceCollection.AddTestDatabase();
+        serviceCollection.AddCoreAutoMapper();
+        
         return serviceCollection;
     }
 
