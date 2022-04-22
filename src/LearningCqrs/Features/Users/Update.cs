@@ -10,9 +10,7 @@ public class Update
 {
     public record UpdateUserCommand(string? Password = null, Guid? TimeZoneId = null, string? Email = null,
         string? FirstName = null, string? LastName = null, string? PhoneNumber = null,
-        string? PhoneNumber2 = null, string? PhoneNumber3 = null) : IRequest<Unit>;
-
-
+        string? PhoneNumber2 = null, string? PhoneNumber3 = null) : IRequest<User>;
     public class UpdateUserHandler : UpdateDocumentHandler<UpdateUserCommand, User>
     {
         public UpdateUserHandler(IRepository<User> repository, IMapper mapper) :

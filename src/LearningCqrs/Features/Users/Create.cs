@@ -5,12 +5,14 @@ using LearningCqrs.Data;
 using LearningCqrs.Features.TimeZones;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TimeZoneInfo = LearningCqrs.Data.TimeZoneInfo;
 
 namespace LearningCqrs.Features.Users;
 
 public class Create
 {
-    public record CreateUserCommand(string Username, string Password, Guid? TimeZoneId = null, string? Email = null,
+    public record CreateUserCommand(string Username, string Password, 
+        [property: Lookup(typeof(TimeZoneInfo))]Guid? TimeZoneId = null, string? Email = null,
         string? FirstName = null, string? LastName = null, string? PhoneNumber = null,
         string? PhoneNumber2 = null, string? PhoneNumber3 = null) : IRequest<DocumentCreated>;
 

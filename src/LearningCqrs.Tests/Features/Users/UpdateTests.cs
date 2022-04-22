@@ -25,7 +25,7 @@ public class UpdateTests : BaseUnitTest
         updateCommand.Replace(e => e.Password, "Password");
         updateCommand.Remove(e => e.LastName);
 
-        await testContext.Mediator.Send(new UpdateDocument<Update.UpdateUserCommand>(user.Id, updateCommand));
+        await testContext.Mediator.Send(new UpdateDocument<Update.UpdateUserCommand, User>(user.Id, updateCommand));
 
         var result = await testContext.DbContext.Users.SingleAsync(e => e.Id == user.Id);
         Assert.Equal("FirstName", result.FirstName);

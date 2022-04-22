@@ -26,7 +26,11 @@ public class Authorize
         
         public async Task<string> Handle(AuthorizeCommand request, CancellationToken cancellationToken)
         {
-            var user = await _repository.Context.Users.SingleAsync(e => e.Username == request.Username, cancellationToken);
+            var user = await _repository.Context.Users.FirstOrDefaultAsync(e => e.Username == request.Username, cancellationToken);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Username does not exists");
+            }
             var passwordHasher = new PasswordHasher<User>();
             var result = passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
             

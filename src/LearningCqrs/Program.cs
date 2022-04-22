@@ -21,6 +21,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    //app.UseSwaggerUI(opt => opt.DefaultModelsExpandDepth(-1));
 }
 
 app.UseHttpsRedirection();

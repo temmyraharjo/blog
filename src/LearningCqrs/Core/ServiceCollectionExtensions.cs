@@ -61,10 +61,11 @@ public static class ServiceCollectionExtensions
             });
     
             opt.OperationFilter<AuthResponsesOperationFilter>();
-            opt.SchemaFilter<SwaggerIgnoreFilter>();
             opt.OperationFilter<IgnorePropertyFilter>();
+            opt.SchemaFilter<SwaggerIgnoreFilter>();
             opt.DocumentFilter<JsonPatchDocumentFilter>();
         });
+        serviceCollection.AddSwaggerGenNewtonsoftSupport();
     }
     
     public static void AddCoreDatabase(this IServiceCollection serviceCollection, string configurationName="BlogConnectionString")
