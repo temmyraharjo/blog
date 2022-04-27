@@ -19,8 +19,9 @@ public static class ServiceCollectionExtensions
     {
         AssemblyScanner.FindValidatorsInAssembly(typeof(Program).Assembly)
             .ForEach(item => serviceCollection.AddScoped(item.InterfaceType, item.ValidatorType));
-        serviceCollection.AddMediatR(typeof(Program).GetTypeInfo().Assembly);   
+        serviceCollection.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
         serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(FluentValidationPipelineBehavior<,>));
+        serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidateLookupPipelineBehavior<,>));
         serviceCollection.AddHttpContextAccessor();
         serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
@@ -57,9 +58,9 @@ public static class ServiceCollectionExtensions
             opt.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityDefinition);
             opt.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
-                {securityDefinition, Array.Empty<string>()}
+                { securityDefinition, Array.Empty<string>() }
             });
-    
+
             opt.OperationFilter<AuthResponsesOperationFilter>();
             opt.OperationFilter<IgnorePropertyFilter>();
             opt.SchemaFilter<SwaggerIgnoreFilter>();
@@ -67,8 +68,9 @@ public static class ServiceCollectionExtensions
         });
         serviceCollection.AddSwaggerGenNewtonsoftSupport();
     }
-    
-    public static void AddCoreDatabase(this IServiceCollection serviceCollection, string configurationName="BlogConnectionString")
+
+    public static void AddCoreDatabase(this IServiceCollection serviceCollection,
+        string configurationName = "BlogConnectionString")
     {
         serviceCollection.AddDbContext<BlogContext>(options =>
         {
@@ -79,6 +81,6 @@ public static class ServiceCollectionExtensions
 
     public static void AddCoreAutoMapper(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddAutoMapper(typeof(Contracts.IMapper), typeof(Features.Mapper));
+        serviceCollection.AddAutoMapper(typeof(IMapper), typeof(Features.Mapper));
     }
 }

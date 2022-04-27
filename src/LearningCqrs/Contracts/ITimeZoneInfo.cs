@@ -1,6 +1,6 @@
 ﻿namespace LearningCqrs.Contracts;
 
-public interface ITimeZoneInfo
+public interface ITimeZoneInfo : IEntity, IAuditEntity
 {
     string Name { get; set; }
 }

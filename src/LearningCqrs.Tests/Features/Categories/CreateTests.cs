@@ -16,9 +16,9 @@ public class CreateTests : BaseUnitTest
         var testContext = GetTestContext();
 
         var command = new Create.CreateCategoryCommand("Category001");
-        await testContext.Mediator.Send(command);
+        var result = await testContext.Mediator.Send(command);
 
-        var createdCategory = await testContext.DbContext.Categories.SingleAsync();
+        var createdCategory = await testContext.DbContext.Categories.SingleAsync(e => e.Id == result.Id);
         Assert.Equal("Category001", createdCategory.Name);
         Assert.NotEmpty(createdCategory.Slug);
     }

@@ -1,6 +1,6 @@
 ﻿namespace LearningCqrs.Contracts;
 
-public interface IUser : IEntity
+public interface IUser : IEntity, IAuditEntity
 {
     string Username { get; set; }
     string Password { get; set; }

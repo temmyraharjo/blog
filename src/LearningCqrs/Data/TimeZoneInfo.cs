@@ -8,5 +8,5 @@ namespace LearningCqrs.Data;
 public class TimeZoneInfo : AuditEntity, ITimeZoneInfo
 {
     [MaxLength(100)]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 }

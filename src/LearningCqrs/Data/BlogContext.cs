@@ -17,7 +17,9 @@ public class BlogContext : DbContext
         optionsBuilder.UseSqlServer(connectionString);
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<TimeZoneInfo> TimeZones { get; set; }
-    public DbSet<Category> Categories { get; set; }
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<TimeZoneInfo> TimeZones { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<Post> Posts { get; set; } = null!;
+    public DbSet<PostCategory> PostCategories { get; set; } = null!;
 }

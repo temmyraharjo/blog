@@ -32,7 +32,7 @@ public class CreateTests : BaseUnitTest
     public async Task Create_duplicate_username()
     {
         var testContext = GetTestContext();
-        var username = $"User-001";
+        var username = "User-001";
         var user = new User
         {
             Username = username,
