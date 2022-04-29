@@ -4,7 +4,7 @@ namespace LearningCqrs.Core.Exceptions;
 
 public class ApiValidationException : Exception
 {
-    public  ValidationFailure[] Failures { get; }
+    public ValidationFailure[] Failures { get; }
 
     public ApiValidationException(ValidationFailure[] failures)
     {

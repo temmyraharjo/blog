@@ -17,11 +17,12 @@ public class GetByUsername
         {
             _repository = repository;
         }
-        
+
         public async Task<User?> Handle(GetByUsernameQuery request, CancellationToken cancellationToken)
         {
             var filter =
-                await _repository.Context.Users.FirstOrDefaultAsync(e => e.Username == request.Username, cancellationToken);
+                await _repository.Context.Users.FirstOrDefaultAsync(e => e.Username == request.Username,
+                    cancellationToken);
 
             return filter;
         }

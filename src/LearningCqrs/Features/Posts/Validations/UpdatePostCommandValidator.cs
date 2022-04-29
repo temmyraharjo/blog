@@ -7,9 +7,7 @@ public class UpdatePostCommandValidator : AbstractValidator<Update.UpdatePostCom
 {
     public UpdatePostCommandValidator()
     {
-        When(x => x.Status == Status.Published && !x.PublishedAt.HasValue, () =>
-        {
-            RuleFor(x => x.PublishedAt).NotNull();
-        });
+        When(x => x.Status == Status.Published && !x.PublishedAt.HasValue,
+            () => { RuleFor(x => x.PublishedAt).NotNull(); });
     }
 }

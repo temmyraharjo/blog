@@ -1,5 +1,4 @@
 ﻿using LearningCqrs.Core;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
 using LearningCqrs.Features.Users;
 using MediatR;
@@ -57,13 +56,13 @@ public class UsersController : ApiController
 
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult> PatchUser(Guid id,
-        [FromBody] UpdateDocumentCommand<Update.UpdateUserCommand, User> updateUserCommand,
+        [FromBody] Core.Handler.Update.UpdateDocumentCommand<Update.UpdateUserCommand, User> updateUserCommand,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>
         {
             var result = await _mediator.Send(
-                new UpdateDocument<Update.UpdateUserCommand, User>(id, updateUserCommand.Patches,
+                new Core.Handler.Update.UpdateDocument<Update.UpdateUserCommand, User>(id, updateUserCommand.Patches,
                     updateUserCommand.Version),
                 cancellationToken);
             return Ok(result);

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LearningCqrs.Core.Exceptions;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
-using LearningCqrs.Features.Categories;
 using LearningCqrs.Tests.Core;
 using Microsoft.AspNetCore.JsonPatch;
 using Xunit;
+using Update = LearningCqrs.Core.Handler.Update;
 
 namespace LearningCqrs.Tests.Features.Categories;
 
@@ -28,13 +27,14 @@ public class UpdateTests : BaseUnitTest
 
         var categoryId = await GetCategoryId(testContext);
 
-        var jsonPatch = new JsonPatchDocument<Update.UpdateCategoryCommand>();
+        var jsonPatch = new JsonPatchDocument<LearningCqrs.Features.Categories.Update.UpdateCategoryCommand>();
         jsonPatch.Replace(e => e.Name, "New Title");
         jsonPatch.Add(e => e.UpdateSlug, true);
 
         var result =
             await testContext.Mediator.Send(
-                new UpdateDocument<Update.UpdateCategoryCommand, Category>(categoryId, jsonPatch));
+                new Update.UpdateDocument<LearningCqrs.Features.Categories.Update.UpdateCategoryCommand, Category>(
+                    categoryId, jsonPatch));
 
         Assert.Equal(categoryId, result.Id);
         Assert.Equal("New Title", result.Name);
@@ -48,12 +48,13 @@ public class UpdateTests : BaseUnitTest
 
         var categoryId = await GetCategoryId(testContext);
 
-        var jsonPatch = new JsonPatchDocument<Update.UpdateCategoryCommand>();
+        var jsonPatch = new JsonPatchDocument<LearningCqrs.Features.Categories.Update.UpdateCategoryCommand>();
         jsonPatch.Replace(e => e.Name, "");
 
         var error = await Assert.ThrowsAsync<ApiValidationException>(() =>
             testContext.Mediator.Send(
-                new UpdateDocument<Update.UpdateCategoryCommand, Category>(categoryId, jsonPatch)));
+                new Update.UpdateDocument<LearningCqrs.Features.Categories.Update.UpdateCategoryCommand, Category>(
+                    categoryId, jsonPatch)));
 
         Assert.Equal("'Name' must not be empty.", error.Failures[0].ErrorMessage);
     }

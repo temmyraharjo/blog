@@ -15,7 +15,7 @@ public class AuthorizeTests : BaseUnitTest
     {
         var testContext = GetTestContext();
         var passwordHasher = new PasswordHasher<User>();
-       
+
         var username = "User001";
         var password = "Password";
         var user = new User
@@ -28,10 +28,10 @@ public class AuthorizeTests : BaseUnitTest
 
         var authorizeCommand = new Authorize.AuthorizeCommand(username, password);
         var resultAuthorize = await testContext.Mediator.Send(authorizeCommand);
-        
+
         Assert.NotNull(resultAuthorize);
     }
-    
+
     [Fact]
     public async Task Authorize_bad_password()
     {
@@ -39,12 +39,13 @@ public class AuthorizeTests : BaseUnitTest
 
         var username = "User001";
         var password = "Password";
-        await testContext.DbContext.Users.AddAsync(new User{ Username = username, Password = password});
+        await testContext.DbContext.Users.AddAsync(new User { Username = username, Password = password });
         await testContext.DbContext.SaveChangesAsync();
 
         var authorizeCommand = new Authorize.AuthorizeCommand(username, $"{password}wrong");
-        var result = await Assert.ThrowsAsync<InvalidOperationException>(() => testContext.Mediator.Send(authorizeCommand)) ;
-        
+        var result =
+            await Assert.ThrowsAsync<InvalidOperationException>(() => testContext.Mediator.Send(authorizeCommand));
+
         Assert.Equal("Username or Password is incorrect", result.Message);
     }
 }

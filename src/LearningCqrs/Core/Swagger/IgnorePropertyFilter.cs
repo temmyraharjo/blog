@@ -22,28 +22,21 @@ public class IgnorePropertyFilter : IOperationFilter
 
         var apiParameterDescriptions = excludedProperties as ApiParameterDescription[] ?? excludedProperties.ToArray();
         if (apiParameterDescriptions.Any())
-        {
-
             foreach (var apiParameterDescription in apiParameterDescriptions)
+            foreach (var customAttribute in apiParameterDescription.CustomAttributes())
             {
-                foreach (var customAttribute in apiParameterDescription.CustomAttributes())
+                if (customAttribute.GetType() != typeof(SwaggerIgnoreAttribute)) continue;
+                for (var i = 0; i < operation.RequestBody.Content.Values.Count; i++)
+                for (var j = 0; j < operation.RequestBody.Content.Values.ElementAt(i).Encoding.Count; j++)
                 {
-                    if (customAttribute.GetType() != typeof(SwaggerIgnoreAttribute)) continue;
-                    for (var i = 0; i < operation.RequestBody.Content.Values.Count; i++)
-                    {
-                        for (var j = 0; j < operation.RequestBody.Content.Values.ElementAt(i).Encoding.Count; j++)
-                        {
-                            if (operation.RequestBody.Content.Values.ElementAt(i).Encoding.ElementAt(j).Key !=
-                                apiParameterDescription.Name) continue;
-                            operation.RequestBody.Content.Values.ElementAt(i).Encoding
-                                .Remove(operation.RequestBody.Content.Values.ElementAt(i).Encoding
-                                    .ElementAt(j));
-                            operation.RequestBody.Content.Values.ElementAt(i).Schema.Properties.Remove(apiParameterDescription.Name);
-                        }
-                    }
+                    if (operation.RequestBody.Content.Values.ElementAt(i).Encoding.ElementAt(j).Key !=
+                        apiParameterDescription.Name) continue;
+                    operation.RequestBody.Content.Values.ElementAt(i).Encoding
+                        .Remove(operation.RequestBody.Content.Values.ElementAt(i).Encoding
+                            .ElementAt(j));
+                    operation.RequestBody.Content.Values.ElementAt(i).Schema.Properties
+                        .Remove(apiParameterDescription.Name);
                 }
             }
-
-        }
     }
 }

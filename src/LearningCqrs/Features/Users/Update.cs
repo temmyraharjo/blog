@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using LearningCqrs.Contracts;
 using LearningCqrs.Core;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
 using MediatR;
 using IMapper = AutoMapper.IMapper;
@@ -16,10 +15,11 @@ public class Update
         Guid? TimeZoneId = null, string? Email = null,
         string? FirstName = null, string? LastName = null, string? PhoneNumber = null,
         string? PhoneNumber2 = null, string? PhoneNumber3 = null) : IRequest<User>;
-    
-    public class UpdateUserHandler : UpdateDocumentHandler<UpdateUserCommand, User>
+
+    public class UpdateUserHandler : Core.Handler.Update.UpdateDocumentHandler<UpdateUserCommand, User>
     {
-        public UpdateUserHandler(IRepository<User> repository, IMapper mapper, IEnumerable<IValidator<UpdateUserCommand>> validators) :
+        public UpdateUserHandler(IRepository<User> repository, IMapper mapper,
+            IEnumerable<IValidator<UpdateUserCommand>> validators) :
             base(repository, mapper, validators)
         {
         }

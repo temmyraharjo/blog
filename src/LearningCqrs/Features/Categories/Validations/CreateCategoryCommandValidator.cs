@@ -9,7 +9,7 @@ public class CreateCategoryCommandValidator : AbstractValidator<Create.CreateCat
     public CreateCategoryCommandValidator(BlogContext context)
     {
         RuleFor(x => x.Name).NotEmpty();
-        RuleFor(x=>x.Name).CustomAsync(async (name, validationContext, cancellationToken) =>
+        RuleFor(x => x.Name).CustomAsync(async (name, validationContext, cancellationToken) =>
         {
             var exists = await context.Categories.Where(x => x.Name == name)
                 .AnyAsync(cancellationToken);

@@ -21,12 +21,12 @@ public class GetTimeZones
         {
             try
             {
-
             }
             catch
             {
                 return new Data.TimeZoneInfo[] { };
             }
+
             if (request.TimeZoneId.HasValue)
             {
                 var result = await _repository.Context.TimeZones

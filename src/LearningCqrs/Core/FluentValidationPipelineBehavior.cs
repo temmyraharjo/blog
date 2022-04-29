@@ -8,7 +8,11 @@ public class FluentValidationPipelineBehavior<TRequest, TResponse> : IPipelineBe
     where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
-    public FluentValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators) =>  _validators = validators;
+
+    public FluentValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators)
+    {
+        _validators = validators;
+    }
 
     public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
         RequestHandlerDelegate<TResponse> next)

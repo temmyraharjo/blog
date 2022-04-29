@@ -1,6 +1,5 @@
 ﻿using LearningCqrs.Contracts;
 using LearningCqrs.Core;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
 using LearningCqrs.Features.TimeZones;
 using MediatR;
@@ -11,12 +10,13 @@ namespace LearningCqrs.Features.Users;
 
 public class Create
 {
-    public record CreateUserCommand(string Username, string Password, 
-        [property: Lookup(typeof(TimeZoneInfo))]Guid? TimeZoneId = null, string? Email = null,
+    public record CreateUserCommand(string Username, string Password,
+        [property: Lookup(typeof(TimeZoneInfo))]
+        Guid? TimeZoneId = null, string? Email = null,
         string? FirstName = null, string? LastName = null, string? PhoneNumber = null,
         string? PhoneNumber2 = null, string? PhoneNumber3 = null) : IRequest<DocumentCreated>;
 
-    public class CreateUserHandler : CreateDocumentHandler<CreateUserCommand>
+    public class CreateUserHandler : Core.Handler.Create.CreateDocumentHandler<CreateUserCommand>
     {
         private readonly IRepository<User> _repository;
         private readonly IMediator _mediator;

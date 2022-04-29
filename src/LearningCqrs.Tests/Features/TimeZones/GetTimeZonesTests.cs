@@ -9,11 +9,12 @@ namespace LearningCqrs.Tests.Features.TimeZones;
 
 public class GetTimeZonesTests : BaseUnitTest
 {
-    private async Task InitData(IMediator mediator){
-         var command = new InitTimeZone.InitTimeZoneCommand();
+    private async Task InitData(IMediator mediator)
+    {
+        var command = new InitTimeZone.InitTimeZoneCommand();
         await mediator.Send(command);
     }
-    
+
     [Fact]
     public async Task Get_Timezones_ByGuid()
     {
@@ -27,18 +28,18 @@ public class GetTimeZonesTests : BaseUnitTest
         Assert.Equal(firstTimeZone.Id, result[0].Id);
         Assert.Equal(firstTimeZone.Name, result[0].Name);
     }
-    
+
     [Fact]
     public async Task Get_Timezones_ByContains()
     {
         var testContext = GetTestContext();
         await InitData(testContext.Mediator);
-        
+
         var command = new GetTimeZones.GetTimeZonesQuery(null, "Mountain Standard Time", "");
         var result = await testContext.Mediator.Send(command);
         Assert.Equal(3, result.Length);
     }
-    
+
     [Fact]
     public async Task Get_Timezones_Equal()
     {
@@ -49,7 +50,7 @@ public class GetTimeZonesTests : BaseUnitTest
         var result = await testContext.Mediator.Send(command);
         Assert.Single(result);
     }
-    
+
     [Fact]
     public async Task Get_Timezones_All()
     {

@@ -7,6 +7,5 @@ namespace LearningCqrs.Data;
 [Table("Timezones")]
 public class TimeZoneInfo : AuditEntity, ITimeZoneInfo
 {
-    [MaxLength(100)]
-    public string Name { get; set; } = null!;
+    [MaxLength(100)] public string Name { get; set; } = null!;
 }

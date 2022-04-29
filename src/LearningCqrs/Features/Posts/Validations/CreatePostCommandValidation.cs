@@ -7,9 +7,7 @@ public class CreatePostCommandValidator : AbstractValidator<Create.CreatePostCom
 {
     public CreatePostCommandValidator()
     {
-        When(x => x.Status == Status.Published && !x.PublishedAt.HasValue, () =>
-        {
-            RuleFor(x => x.PublishedAt).NotNull();
-        });
+        When(x => x.Status == Status.Published && !x.PublishedAt.HasValue,
+            () => { RuleFor(x => x.PublishedAt).NotNull(); });
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LearningCqrs.Core.Exceptions;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
-using LearningCqrs.Features.Users;
 using LearningCqrs.Tests.Core;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using Update = LearningCqrs.Core.Handler.Update;
 
 namespace LearningCqrs.Tests.Features.Users;
 
@@ -28,12 +27,14 @@ public class UpdateTests : BaseUnitTest
         var testContext = GetTestContext();
         var userId = await GetUserId(testContext);
 
-        var updateCommand = new JsonPatchDocument<Update.UpdateUserCommand>();
+        var updateCommand = new JsonPatchDocument<LearningCqrs.Features.Users.Update.UpdateUserCommand>();
         updateCommand.Add(e => e.FirstName, "FirstName");
         updateCommand.Replace(e => e.Password, "Password");
         updateCommand.Remove(e => e.LastName);
 
-        await testContext.Mediator.Send(new UpdateDocument<Update.UpdateUserCommand, User>(userId, updateCommand));
+        await testContext.Mediator.Send(
+            new Update.UpdateDocument<LearningCqrs.Features.Users.Update.UpdateUserCommand, User>(userId,
+                updateCommand));
 
         var result = await testContext.DbContext.Users.SingleAsync(e => e.Id == userId);
         Assert.Equal("FirstName", result.FirstName);
@@ -47,13 +48,15 @@ public class UpdateTests : BaseUnitTest
         var testContext = GetTestContext();
         var userId = await GetUserId(testContext);
 
-        var updateCommand = new JsonPatchDocument<Update.UpdateUserCommand>();
+        var updateCommand = new JsonPatchDocument<LearningCqrs.Features.Users.Update.UpdateUserCommand>();
         updateCommand.Add(e => e.FirstName, "FirstName");
         updateCommand.Replace(e => e.Password, "");
         updateCommand.Remove(e => e.LastName);
 
         var error = await Assert.ThrowsAsync<ApiValidationException>(() =>
-            testContext.Mediator.Send(new UpdateDocument<Update.UpdateUserCommand, User>(userId, updateCommand)));
+            testContext.Mediator.Send(
+                new Update.UpdateDocument<LearningCqrs.Features.Users.Update.UpdateUserCommand, User>(userId,
+                    updateCommand)));
 
         Assert.Equal("'Password' must not be empty.", error.Failures[0].ErrorMessage);
     }

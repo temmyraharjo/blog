@@ -7,13 +7,13 @@ namespace LearningCqrs.Extensions;
 public static class StringExtensions
 {
     // white space, em-dash, en-dash, underscore
-    static readonly Regex WordDelimiters = new Regex(@"[\s—–_]", RegexOptions.Compiled);
+    private static readonly Regex WordDelimiters = new(@"[\s—–_]", RegexOptions.Compiled);
 
     // characters that are not valid
-    static readonly Regex InvalidChars = new Regex(@"[^a-z0-9\-]", RegexOptions.Compiled);
+    private static readonly Regex InvalidChars = new(@"[^a-z0-9\-]", RegexOptions.Compiled);
 
     // multiple hyphens
-    static readonly Regex MultipleHyphens = new Regex(@"-{2,}", RegexOptions.Compiled);
+    private static readonly Regex MultipleHyphens = new(@"-{2,}", RegexOptions.Compiled);
 
     public static string ToUrlSlug(this string value)
     {
@@ -45,12 +45,9 @@ public static class StringExtensions
         foreach (var t in stFormD)
         {
             var uc = CharUnicodeInfo.GetUnicodeCategory(t);
-            if (uc != UnicodeCategory.NonSpacingMark)
-            {
-                sb.Append(t);
-            }
+            if (uc != UnicodeCategory.NonSpacingMark) sb.Append(t);
         }
 
-        return (sb.ToString().Normalize(NormalizationForm.FormC));
+        return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 }

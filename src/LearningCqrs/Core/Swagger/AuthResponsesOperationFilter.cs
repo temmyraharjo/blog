@@ -11,12 +11,16 @@ public class AuthResponsesOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
+        var noAuthRequired = context.ApiDescription.CustomAttributes()
+            .Any(attr => attr.GetType() == typeof(AllowAnonymousAttribute));
+        if (noAuthRequired) return;
+
         var authAttributes = context.MethodInfo.DeclaringType?.GetCustomAttributes(true)
             .Union(context.MethodInfo.GetCustomAttributes(true))
             .OfType<AuthorizeAttribute>();
 
         if (authAttributes == null || !authAttributes.Any()) return;
-        
+
         var securityRequirement = new OpenApiSecurityRequirement()
         {
             {
@@ -28,7 +32,7 @@ public class AuthResponsesOperationFilter : IOperationFilter
                         Type = ReferenceType.SecurityScheme,
                         Id = JwtBearerDefaults.AuthenticationScheme
                     },
-                    Scheme =JwtBearerDefaults.AuthenticationScheme,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
                     Name = HeaderNames.Authorization,
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
@@ -37,7 +41,7 @@ public class AuthResponsesOperationFilter : IOperationFilter
                 new List<string>()
             }
         };
-            
+
         operation.Security = new List<OpenApiSecurityRequirement> { securityRequirement };
         operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
     }

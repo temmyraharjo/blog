@@ -11,8 +11,14 @@ public class ValidateLookupPipelineBehavior<TRequest, TResponse> : IPipelineBeha
     where TRequest : IRequest<TResponse>
 {
     private readonly BlogContext _context;
-    public ValidateLookupPipelineBehavior(BlogContext context) => _context = context;
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+
+    public ValidateLookupPipelineBehavior(BlogContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         var validationFailures = new List<ValidationFailure>();
         const BindingFlags bindingFlags = BindingFlags.Public |
@@ -29,17 +35,18 @@ public class ValidateLookupPipelineBehavior<TRequest, TResponse> : IPipelineBeha
         {
             var attributeName = datum.MemberInfo.Name;
             var value = datum.MemberInfo.GetMemberValue(request);
-            if(value == null) continue;
+            if (value == null) continue;
             var ids = (GetArrayGuid(value) ?? new[] { GetSingleGuid(value) ?? Guid.Empty })
-                .Where(e=>e!=Guid.Empty).ToArray();
+                .Where(e => e != Guid.Empty).ToArray();
             var entityType = datum.LookupAttribute?.EntityType;
-            if(entityType == null) continue;
+            if (entityType == null) continue;
 
             foreach (var id in ids)
             {
                 var exists = await _context.FindAsync(entityType, id);
-                if(exists != null) continue;
-                validationFailures.Add(new ValidationFailure(attributeName, $"Entity {entityType.Name} with Id '{id}' does not exists"));
+                if (exists != null) continue;
+                validationFailures.Add(new ValidationFailure(attributeName,
+                    $"Entity {entityType.Name} with Id '{id}' does not exists"));
             }
         }
 
@@ -52,7 +59,7 @@ public class ValidateLookupPipelineBehavior<TRequest, TResponse> : IPipelineBeha
         return value as Guid?;
     }
 
-    private Guid[]? GetArrayGuid(Object value)
+    private Guid[]? GetArrayGuid(object value)
     {
         return value as Guid[];
     }

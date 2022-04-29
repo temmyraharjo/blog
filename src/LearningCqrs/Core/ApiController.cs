@@ -1,5 +1,4 @@
-﻿
-using LearningCqrs.Core.Exceptions;
+﻿using LearningCqrs.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningCqrs.Core;
@@ -7,7 +6,7 @@ namespace LearningCqrs.Core;
 public abstract class ApiController : ControllerBase
 {
     public async Task<ActionResult> Execute<T>(Func<Task<T>> function)
-        where T: ActionResult
+        where T : ActionResult
     {
         try
         {

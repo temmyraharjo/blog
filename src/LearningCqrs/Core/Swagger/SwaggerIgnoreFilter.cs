@@ -25,18 +25,16 @@ public class SwaggerIgnoreFilter : ISchemaFilter
                 m.GetCustomAttribute<SwaggerIgnoreAttribute>()
                 != null)
             .Select(m =>
-                (m.GetCustomAttribute<JsonPropertyAttribute>()
-                     ?.PropertyName
-                 ?? CamelCase(m.Name)));
+                m.GetCustomAttribute<JsonPropertyAttribute>()
+                    ?.PropertyName
+                ?? CamelCase(m.Name));
 
         foreach (var excludedName in excludedList)
-        {
             if (schema.Properties.ContainsKey(excludedName))
                 schema.Properties.Remove(excludedName);
-        }
     }
-    
-    static string CamelCase(string s)
+
+    private static string CamelCase(string s)
     {
         var x = s.Replace("_", "");
         if (x.Length == 0) return "null";

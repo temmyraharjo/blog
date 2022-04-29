@@ -1,6 +1,5 @@
 ﻿using LearningCqrs.Contracts;
 using LearningCqrs.Core;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
 using LearningCqrs.Extensions;
 using MediatR;
@@ -11,7 +10,7 @@ public class Create
 {
     public record CreateCategoryCommand(string Name) : IRequest<DocumentCreated>;
 
-    public class CreateCategoryHandler : CreateDocumentHandler<CreateCategoryCommand>
+    public class CreateCategoryHandler : Core.Handler.Create.CreateDocumentHandler<CreateCategoryCommand>
     {
         private readonly IRepository<Category> _repository;
 
@@ -20,13 +19,14 @@ public class Create
             _repository = repository;
         }
 
-        public override async Task<DocumentCreated> Handling(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public override async Task<DocumentCreated> Handling(CreateCategoryCommand request,
+            CancellationToken cancellationToken)
         {
             var category = new Category
             {
                 Name = request.Name,
                 Slug = request.Name.ToUrlSlug()
-            };   
+            };
             await _repository.CreateAsync(category, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
 

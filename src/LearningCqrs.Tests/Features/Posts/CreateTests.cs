@@ -32,7 +32,7 @@ public class CreateTests : BaseUnitTest
         var testContext = GetTestContext();
         var categoryIds = await GetCategoryIds(testContext);
 
-        var command = new Create.CreatePostCommand(Title: "Title", Status: Status.Draft,
+        var command = new Create.CreatePostCommand("Title", Status: Status.Draft,
             CategoryIds: categoryIds, PostType: PostType.Blog, PublishedAt: DateTime.Now, Body: "This is body");
         var result = await testContext.Mediator.Send(command);
 
@@ -54,7 +54,7 @@ public class CreateTests : BaseUnitTest
         var testContext = GetTestContext();
         var categoryIds = await GetCategoryIds(testContext);
 
-        var command = new Create.CreatePostCommand(Title: "Title", Status: Status.Published,
+        var command = new Create.CreatePostCommand("Title", Status: Status.Published,
             CategoryIds: categoryIds, PostType: PostType.Blog, Body: "This is body");
         var error = await Assert.ThrowsAsync<ApiValidationException>(() => testContext.Mediator.Send(command));
 

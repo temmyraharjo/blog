@@ -21,7 +21,7 @@ public class CreateTests : BaseUnitTest
         };
         await testContext.DbContext.TimeZones.AddAsync(timeZone);
         await testContext.DbContext.SaveChangesAsync();
-        
+
         var command = new Create.CreateUserCommand("User001", "Password", timeZone.Id);
         var result = await testContext.Mediator.Send(command);
         var userCreated = await testContext.DbContext.Users.SingleAsync(e => e.Id == result.Id);
@@ -54,7 +54,8 @@ public class CreateTests : BaseUnitTest
         var testContext = GetTestContext();
         var timezoneId = Guid.NewGuid();
         var command = new Create.CreateUserCommand("User001", "Password", timezoneId);
-        var error = await Assert.ThrowsAsync<ApiValidationException>(async () => await testContext.Mediator.Send(command));
+        var error = await Assert.ThrowsAsync<ApiValidationException>(async () =>
+            await testContext.Mediator.Send(command));
 
         Assert.Equal($"Entity TimeZoneInfo with Id '{timezoneId}' does not exists", error.Failures[0].ErrorMessage);
     }

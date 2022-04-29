@@ -1,6 +1,5 @@
 ﻿using LearningCqrs.Contracts;
 using LearningCqrs.Core;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
 using LearningCqrs.Extensions;
 using MediatR;
@@ -14,7 +13,7 @@ public class Create
         PostType? PostType = PostType.Blog,
         [property: Lookup(typeof(Category))] Guid[]? CategoryIds = null) : IRequest<DocumentCreated>;
 
-    public class CreatePostHandler : CreateDocumentHandler<CreatePostCommand>
+    public class CreatePostHandler : Core.Handler.Create.CreateDocumentHandler<CreatePostCommand>
     {
         private readonly IRepository<Post> _repository;
 
@@ -28,7 +27,7 @@ public class Create
         {
             ICollection<Category>? categories = request.CategoryIds?.Select(id =>
             {
-                var result =  _repository.Context.Categories.Find(id);
+                var result = _repository.Context.Categories.Find(id);
                 return result;
             }).Where(e => e != null).ToArray()!;
 
@@ -43,13 +42,11 @@ public class Create
             };
 
             if (request.CategoryIds != null && request.CategoryIds.Any())
-            {
                 post.PostCategories = request.CategoryIds.Select(categoryId => new PostCategory
                 {
                     CategoryId = categoryId,
                     Post = post
                 }).ToArray();
-            }
             await _repository.CreateAsync(post, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
 

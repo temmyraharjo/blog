@@ -12,7 +12,7 @@ public class JsonPatchDocumentFilter : IDocumentFilter
         foreach (var item in schemas)
         {
             if (!item.Key.Contains("JsonPatchDocument")) continue;
-            if(item.Value.Properties.All(e => e.Key != "operations")) continue;
+            if (item.Value.Properties.All(e => e.Key != "operations")) continue;
             swaggerDoc.Components.Schemas.Remove(item);
             swaggerDoc.Components.Schemas.Add(item.Key, item.Value.Properties["operations"]);
         }

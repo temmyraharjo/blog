@@ -12,8 +12,9 @@ public class RowVersionValidator<TEntity> : AbstractValidator<TEntity>
         {
             var valid = entity.RowVersion == null || Convert.ToBase64String(entity.RowVersion) == rowVersion;
             if (valid) return;
-            
-            validationContext.AddFailure($"Update {typeof(TEntity).Name} with id '{entity.Id}' is failed. Please retry again later.");
+
+            validationContext.AddFailure(
+                $"Update {typeof(TEntity).Name} with id '{entity.Id}' is failed. Please retry again later.");
         });
     }
 }

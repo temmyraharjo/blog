@@ -23,18 +23,17 @@ public class Authorize
         {
             _repository = repository;
         }
-        
+
         public async Task<string> Handle(AuthorizeCommand request, CancellationToken cancellationToken)
         {
-            var user = await _repository.Context.Users.FirstOrDefaultAsync(e => e.Username == request.Username, cancellationToken);
-            if (user == null)
-            {
-                throw new InvalidOperationException("Username does not exists");
-            }
+            var user = await _repository.Context.Users.FirstOrDefaultAsync(e => e.Username == request.Username,
+                cancellationToken);
+            if (user == null) throw new InvalidOperationException("Username does not exists");
             var passwordHasher = new PasswordHasher<User>();
             var result = passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
-            
-            if(result == PasswordVerificationResult.Failed)  throw new InvalidOperationException("Username or Password is incorrect");
+
+            if (result == PasswordVerificationResult.Failed)
+                throw new InvalidOperationException("Username or Password is incorrect");
 
             var claims = new[]
             {
@@ -42,10 +41,11 @@ public class Authorize
                 new Claim(ClaimTypes.Role, Settings.Role)
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetConnectionString("AppId")));
+            var securityKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetConnectionString("AppId")));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-            var tokenDescriptor = new JwtSecurityToken(issuer: Configuration.GetConnectionString("ValidIssuer"), 
-                audience: Configuration.GetConnectionString("ValidAudience"), claims, expires: DateTime.Now.AddHours(2), 
+            var tokenDescriptor = new JwtSecurityToken(Configuration.GetConnectionString("ValidIssuer"),
+                Configuration.GetConnectionString("ValidAudience"), claims, expires: DateTime.Now.AddHours(2),
                 signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }

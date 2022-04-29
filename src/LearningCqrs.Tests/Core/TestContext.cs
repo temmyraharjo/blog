@@ -18,12 +18,14 @@ public class TestContext
         serviceCollection.AddCore();
         serviceCollection.AddTestDatabase();
         serviceCollection.AddCoreAutoMapper();
-        
+
         return serviceCollection;
     }
 
     private BlogContext? _blogContext;
-    public BlogContext DbContext => _blogContext ??= ServiceProvider.GetService<BlogContext>() ?? throw new NullException(nameof(BlogContext));
+
+    public BlogContext DbContext => _blogContext ??=
+        ServiceProvider.GetService<BlogContext>() ?? throw new NullException(nameof(BlogContext));
 
     private IMediator? _mediator;
 

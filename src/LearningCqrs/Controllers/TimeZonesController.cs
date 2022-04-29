@@ -17,7 +17,7 @@ public class TimeZonesController : ApiController
     {
         _mediator = mediator;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult> GetTimeZones([FromQuery] GetTimeZones.GetTimeZonesQuery getTimeZonesQuery,
         CancellationToken cancellationToken)

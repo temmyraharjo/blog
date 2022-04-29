@@ -10,9 +10,6 @@ public class UpdateUserCommandValidator : AbstractValidator<Update.UpdateUserCom
 
     public UpdateUserCommandValidator(IRepository<User> repository)
     {
-        When(x => x.Password != null, () =>
-        {
-            RuleFor(x => x.Password).NotEmpty();
-        });
+        When(x => x.Password != null, () => { RuleFor(x => x.Password).NotEmpty(); });
     }
 }

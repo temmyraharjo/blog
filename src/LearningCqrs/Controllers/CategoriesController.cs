@@ -1,5 +1,4 @@
 ﻿using LearningCqrs.Core;
-using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
 using LearningCqrs.Features.Categories;
 using MediatR;
@@ -30,22 +29,24 @@ public class CategoriesController : ApiController
             return Ok(result);
         });
     }
-    
+
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult> PatchCateory(Guid id,
-        [FromBody] UpdateDocumentCommand<Update.UpdateCategoryCommand, Category> updateCategoryCommand,
+        [FromBody]
+        Core.Handler.Update.UpdateDocumentCommand<Update.UpdateCategoryCommand, Category> updateCategoryCommand,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>
         {
             var result = await _mediator.Send(
-                new UpdateDocument<Update.UpdateCategoryCommand, Category>(id, updateCategoryCommand.Patches,
+                new Core.Handler.Update.UpdateDocument<Update.UpdateCategoryCommand, Category>(id,
+                    updateCategoryCommand.Patches,
                     updateCategoryCommand.Version),
                 cancellationToken);
             return Ok(result);
         });
     }
-    
+
     [HttpGet]
     public async Task<ActionResult> GetTimeZones([FromQuery] GetCategory.GetCategoryQuery getCategoryQuery,
         CancellationToken cancellationToken)
@@ -53,6 +54,18 @@ public class CategoriesController : ApiController
         return await Execute(async () =>
         {
             var result = await _mediator.Send(getCategoryQuery, cancellationToken);
+            return Ok(result);
+        });
+    }
+
+    [AllowAnonymous]
+    [HttpPost("query")]
+    public async Task<ActionResult> Query([FromBody] Query.QueryCategoryCommand queryCategory,
+        CancellationToken cancellationToken)
+    {
+        return await Execute(async () =>
+        {
+            var result = await _mediator.Send(queryCategory, cancellationToken);
             return Ok(result);
         });
     }

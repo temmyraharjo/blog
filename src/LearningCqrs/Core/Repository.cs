@@ -42,8 +42,8 @@ public class Repository<TEntity> : IRepository<TEntity>
             .GetProperties(bindingFlags)
             .Where(p => p.CanRead && p.CanWrite)
             .Where(p => p.PropertyType.IsAssignableFrom(typeof(IAuditEntity)) ||
-                        (p.PropertyType.IsGenericType &&
-                         p.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>)))
+                        p.PropertyType.IsGenericType &&
+                        p.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>))
             .ToArray();
 
         foreach (var property in validProperties)
@@ -63,9 +63,7 @@ public class Repository<TEntity> : IRepository<TEntity>
         if (entities == null) return;
 
         foreach (var entity in entities)
-        {
             await entity.SetAuditProperty(_httpContextAccessor, _mediator, cancellationToken, isCreate);
-        }
     }
 
     private async Task SetEntity(object value,

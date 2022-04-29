@@ -8,10 +8,10 @@ public static class Configuration
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
-        
+
         return configuration.GetConnectionString(configurationName);
     }
-    
+
     public static string Get(string configurationName)
     {
         var configuration = new ConfigurationBuilder()

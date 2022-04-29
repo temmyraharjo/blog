@@ -5,7 +5,6 @@ using LearningCqrs.Contracts;
 using LearningCqrs.Core.Exceptions;
 using LearningCqrs.Core.Handler;
 using LearningCqrs.Data;
-using LearningCqrs.Features.Posts;
 using LearningCqrs.Tests.Core;
 using Microsoft.AspNetCore.JsonPatch;
 using Xunit;
@@ -48,14 +47,14 @@ public class UpdateTests : BaseUnitTest
         var categoryIds = await GetCategoryIds(testContext);
         var post = await GetPost(testContext);
 
-        var jsonPatch = new JsonPatchDocument<Update.UpdatePostCommand>();
+        var jsonPatch = new JsonPatchDocument<LearningCqrs.Features.Posts.Update.UpdatePostCommand>();
         jsonPatch.Replace(e => e.Title, "New Title");
         jsonPatch.Add(e => e.UpdateSlug, true);
         jsonPatch.Replace(e => e.Body, "New Body");
         jsonPatch.Add(e => e.CategoryIds, categoryIds);
 
         var result = await testContext.Mediator.Send(
-            new UpdateDocument<Update.UpdatePostCommand, Post>(post.Id, jsonPatch));
+            new Update.UpdateDocument<LearningCqrs.Features.Posts.Update.UpdatePostCommand, Post>(post.Id, jsonPatch));
 
         Assert.Equal("New Title", result.Title);
         Assert.Equal("new-title", result.Slug);
@@ -72,7 +71,7 @@ public class UpdateTests : BaseUnitTest
         var categoryIds = await GetCategoryIds(testContext);
         var post = await GetPost(testContext);
 
-        var jsonPatch = new JsonPatchDocument<Update.UpdatePostCommand>();
+        var jsonPatch = new JsonPatchDocument<LearningCqrs.Features.Posts.Update.UpdatePostCommand>();
         jsonPatch.Replace(e => e.Title, "New Title");
         jsonPatch.Add(e => e.UpdateSlug, true);
         jsonPatch.Replace(e => e.Body, "New Body");
@@ -80,7 +79,7 @@ public class UpdateTests : BaseUnitTest
         jsonPatch.Add(e => e.Status, Status.Published);
 
         var error = await Assert.ThrowsAsync<ApiValidationException>(() => testContext.Mediator.Send(
-            new UpdateDocument<Update.UpdatePostCommand, Post>(post.Id, jsonPatch)));
+            new Update.UpdateDocument<LearningCqrs.Features.Posts.Update.UpdatePostCommand, Post>(post.Id, jsonPatch)));
 
         Assert.Equal("'Published At' must not be empty.", error.Failures[0].ErrorMessage);
     }

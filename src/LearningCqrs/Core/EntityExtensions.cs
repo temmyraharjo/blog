@@ -14,15 +14,13 @@ public static class EntityExtensions
 
         return entity;
     }
-    
-    public static async Task<IEntity[]> SetAuditProperty(this IEntity[] entities, IHttpContextAccessor httpContextAccessor, 
-        IMediator mediator, CancellationToken cancellationToken, IUser? user = null, bool isCreate=true)
+
+    public static async Task<IEntity[]> SetAuditProperty(this IEntity[] entities,
+        IHttpContextAccessor httpContextAccessor,
+        IMediator mediator, CancellationToken cancellationToken, IUser? user = null, bool isCreate = true)
     {
         var currentUser = user ?? await httpContextAccessor.GetCurrentUser(mediator, cancellationToken);
-        foreach (var entity in entities)
-        {
-            await entity.SetAuditProperty(currentUser, isCreate);
-        }
+        foreach (var entity in entities) await entity.SetAuditProperty(currentUser, isCreate);
 
         return entities;
     }
@@ -30,7 +28,7 @@ public static class EntityExtensions
     private static Task SetAuditProperty(this IEntity entity, IUser? user = null, bool isCreate = true)
     {
         if (entity is not IAuditEntity auditEntity) return Task.CompletedTask;
-        
+
         if (isCreate)
         {
             auditEntity.CreatedOn = DateTime.UtcNow;
