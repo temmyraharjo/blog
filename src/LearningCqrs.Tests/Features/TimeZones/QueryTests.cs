@@ -7,7 +7,7 @@ using Xunit;
 
 namespace LearningCqrs.Tests.Features.TimeZones;
 
-public class GetTimeZonesTests : BaseUnitTest
+public class QueryTests : BaseUnitTest
 {
     private async Task InitData(IMediator mediator)
     {
@@ -22,11 +22,14 @@ public class GetTimeZonesTests : BaseUnitTest
         await InitData(testContext.Mediator);
 
         var firstTimeZone = await testContext.DbContext.TimeZones.FirstAsync();
-        var command = new GetTimeZones.GetTimeZonesQuery(firstTimeZone.Id, "", "");
+        var command = new Query.QueryTimeZoneCommand
+        {
+            Filter = $"Id == \"{firstTimeZone.Id}\""
+        };
         var result = await testContext.Mediator.Send(command);
-        Assert.Single(result);
-        Assert.Equal(firstTimeZone.Id, result[0].Id);
-        Assert.Equal(firstTimeZone.Name, result[0].Name);
+        Assert.Single(result.Data);
+        Assert.Equal(firstTimeZone.Id, result.Data[0].Id);
+        Assert.Equal(firstTimeZone.Name, result.Data[0].Name);
     }
 
     [Fact]
@@ -35,9 +38,12 @@ public class GetTimeZonesTests : BaseUnitTest
         var testContext = GetTestContext();
         await InitData(testContext.Mediator);
 
-        var command = new GetTimeZones.GetTimeZonesQuery(null, "Mountain Standard Time", "");
+        var command = new Query.QueryTimeZoneCommand
+        {
+            Filter = "Name.Contains(\"Mountain Standard Time\")"
+        };
         var result = await testContext.Mediator.Send(command);
-        Assert.Equal(3, result.Length);
+        Assert.Equal(3, result.Data.Length);
     }
 
     [Fact]
@@ -46,9 +52,12 @@ public class GetTimeZonesTests : BaseUnitTest
         var testContext = GetTestContext();
         await InitData(testContext.Mediator);
 
-        var command = new GetTimeZones.GetTimeZonesQuery(null, "", "Mountain Standard Time");
+        var command = new Query.QueryTimeZoneCommand
+        {
+            Filter = "Name == \"Mountain Standard Time\""
+        };
         var result = await testContext.Mediator.Send(command);
-        Assert.Single(result);
+        Assert.Single(result.Data);
     }
 
     [Fact]
@@ -58,8 +67,8 @@ public class GetTimeZonesTests : BaseUnitTest
         await InitData(testContext.Mediator);
 
         var length = await testContext.DbContext.TimeZones.CountAsync();
-        var command = new GetTimeZones.GetTimeZonesQuery(null, null, "");
+        var command = new Query.QueryTimeZoneCommand {Take = length};
         var result = await testContext.Mediator.Send(command);
-        Assert.Equal(length, result.Length);
+        Assert.Equal(length, result.Data.Length);
     }
 }

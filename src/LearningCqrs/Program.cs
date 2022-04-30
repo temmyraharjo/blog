@@ -17,11 +17,12 @@ builder.Services.AddCoreSwaggerGeneration();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var enableSwagger = bool.Parse(app.Configuration.GetConnectionString("EnableSwagger"));
+if (enableSwagger)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseSwaggerUI(opt => opt.DefaultModelsExpandDepth(-1));
+    app.UseSwaggerUI(opt => opt.DefaultModelsExpandDepth(-1));
 }
 
 app.UseHttpsRedirection();

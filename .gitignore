@@ -249,3 +249,6 @@ ModelManifest.xml
 *.bak
 
 *.kdco
+
+**/*Web Deploy.pubxml
+**/profile.arm.json

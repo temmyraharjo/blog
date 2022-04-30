@@ -31,7 +31,7 @@ public class CategoriesController : ApiController
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<ActionResult> PatchCateory(Guid id,
+    public async Task<ActionResult> PatchCategory(Guid id,
         [FromBody]
         Core.Handler.Update.UpdateDocumentCommand<Update.UpdateCategoryCommand, Category> updateCategoryCommand,
         CancellationToken cancellationToken)

@@ -42,18 +42,6 @@ public class UsersController : ApiController
         });
     }
 
-    [HttpGet("getbyusername")]
-    public async Task<ActionResult> GetUserByUsername(
-        [FromQuery] GetByUsername.GetByUsernameQuery getByUsernameQuery,
-        CancellationToken cancellationToken)
-    {
-        return await Execute(async () =>
-        {
-            var result = await _mediator.Send(getByUsernameQuery, cancellationToken);
-            return Ok(result);
-        });
-    }
-
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult> PatchUser(Guid id,
         [FromBody] Core.Handler.Update.UpdateDocumentCommand<Update.UpdateUserCommand, User> updateUserCommand,
@@ -65,6 +53,17 @@ public class UsersController : ApiController
                 new Core.Handler.Update.UpdateDocument<Update.UpdateUserCommand, User>(id, updateUserCommand.Patches,
                     updateUserCommand.Version),
                 cancellationToken);
+            return Ok(result);
+        });
+    }
+    
+    [HttpPost("query")]
+    public async Task<ActionResult> Query([FromBody] Query.QueryUserCommand queryPost,
+        CancellationToken cancellationToken)
+    {
+        return await Execute(async () =>
+        {
+            var result = await _mediator.Send(queryPost, cancellationToken);
             return Ok(result);
         });
     }

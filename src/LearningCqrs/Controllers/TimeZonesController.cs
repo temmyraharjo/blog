@@ -19,13 +19,24 @@ public class TimeZonesController : ApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetTimeZones([FromQuery] GetTimeZones.GetTimeZonesQuery getTimeZonesQuery,
+    public async Task<ActionResult> GetTimeZones([FromQuery] Query.QueryTimeZoneCommand queryTimeZoneCommand,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>
         {
-            var result = await _mediator.Send(getTimeZonesQuery, cancellationToken);
+            var result = await _mediator.Send(queryTimeZoneCommand, cancellationToken);
             return Ok(result);
         });
     }
+    
+    [HttpPost]
+    public async Task<ActionResult> InitTimeZones([FromQuery] InitTimeZone.InitTimeZoneCommand initTimeZoneCommand,
+        CancellationToken cancellationToken)
+    {
+        return await Execute(async () =>
+        {
+            var result = await _mediator.Send(initTimeZoneCommand, cancellationToken);
+            return Ok(result);
+        });
+    } 
 }

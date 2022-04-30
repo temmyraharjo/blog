@@ -28,7 +28,7 @@ public class QueryTests : BaseUnitTest
         var testContext = GetTestContext();
         await InitData(testContext);
 
-        var query = new Query.QueryCommand
+        var query = new Query.QueryUserCommand
         {
             Skip = 0,
             Take = 2,

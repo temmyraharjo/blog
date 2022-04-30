@@ -1,9 +1,9 @@
 ﻿using LearningCqrs.Contracts;
 using LearningCqrs.Core;
 using LearningCqrs.Data;
-using LearningCqrs.Features.TimeZones;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TimeZoneInfo = LearningCqrs.Data.TimeZoneInfo;
 
 namespace LearningCqrs.Features.Users;
@@ -45,9 +45,14 @@ public class Create
             user.Password = password;
 
             var timeZoneId =
-                user.TimeZoneId = request.TimeZoneId ?? (await _mediator.Send(
-                    new GetTimeZones.GetTimeZonesQuery(null, null, System.TimeZoneInfo.Local.Id),
-                    cancellationToken)).FirstOrDefault()?.Id;
+                user.TimeZoneId = request.TimeZoneId;
+            if (timeZoneId == Guid.Empty)
+            {
+                var currentTimeZone = await
+                    _repository.Context.TimeZones.FirstOrDefaultAsync(e => e.Name == System.TimeZoneInfo.Local.Id,
+                        cancellationToken);
+                timeZoneId = currentTimeZone?.Id;
+            }
             user.TimeZoneId = timeZoneId;
 
             await _repository.CreateAsync(user, cancellationToken);
