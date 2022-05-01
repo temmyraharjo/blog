@@ -5,15 +5,18 @@ namespace LearningCqrs.Data;
 
 public class BlogContext : DbContext
 {
-    public BlogContext(DbContextOptions<BlogContext> options) : base(options)
+    private readonly IConfiguration _configuration;
+
+    public BlogContext(DbContextOptions<BlogContext> options, IConfiguration configuration) : base(options)
     {
+        _configuration = configuration;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (optionsBuilder.IsConfigured) return;
 
-        var connectionString = Configuration.GetConnectionString("BlogConnectionString");
+        var connectionString = _configuration.GetConnectionString("BlogConnectionString");
         optionsBuilder.UseSqlServer(connectionString);
     }
 

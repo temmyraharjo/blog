@@ -14,7 +14,7 @@ public class PostsController : ApiController
 {
     private readonly IMediator _mediator;
 
-    public PostsController(IMediator mediator)
+    public PostsController(ILogger<ApiController> logger, IMediator mediator) : base(logger)
     {
         _mediator = mediator;
     }
@@ -30,7 +30,6 @@ public class PostsController : ApiController
         });
     }
 
-    [HttpPatch]
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult> PatchPost(Guid id,
         [FromBody] Core.Handler.Update.UpdateDocumentCommand<Update.UpdatePostCommand, Post> updatePostCommand,
@@ -48,7 +47,7 @@ public class PostsController : ApiController
 
     [AllowAnonymous]
     [HttpPost("query")]
-    public async Task<ActionResult> Query([FromBody] Query.QueryPostCommand queryPost,
+    public async Task<ActionResult> QueryPosts([FromBody] Query.QueryPostCommand queryPost,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>

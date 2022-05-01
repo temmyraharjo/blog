@@ -13,13 +13,13 @@ public class TimeZonesController : ApiController
 {
     private readonly IMediator _mediator;
 
-    public TimeZonesController(IMediator mediator)
+    public TimeZonesController(ILogger<ApiController> logger, IMediator mediator) : base(logger)
     {
         _mediator = mediator;
     }
 
-    [HttpGet]
-    public async Task<ActionResult> GetTimeZones([FromQuery] Query.QueryTimeZoneCommand queryTimeZoneCommand,
+    [HttpPost("query")]
+    public async Task<ActionResult> QueryTimeZones([FromBody] Query.QueryTimeZoneCommand queryTimeZoneCommand,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>
@@ -30,13 +30,13 @@ public class TimeZonesController : ApiController
     }
     
     [HttpPost]
-    public async Task<ActionResult> InitTimeZones([FromQuery] InitTimeZone.InitTimeZoneCommand initTimeZoneCommand,
+    public async Task<ActionResult> InitTimeZones([FromBody] InitTimeZone.InitTimeZoneCommand initTimeZoneCommand,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>
         {
-            var result = await _mediator.Send(initTimeZoneCommand, cancellationToken);
-            return Ok(result);
+            await _mediator.Send(initTimeZoneCommand, cancellationToken);
+            return Ok("Created");
         });
     } 
 }

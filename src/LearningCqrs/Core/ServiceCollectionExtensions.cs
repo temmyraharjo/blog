@@ -26,9 +26,9 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
 
-    public static void AddCoreAuthentication(this IServiceCollection serviceCollection)
+    public static void AddCoreAuthentication(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetConnectionString("AppId")));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetConnectionString("AppId")));
         serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(x =>
             {
@@ -69,12 +69,12 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSwaggerGenNewtonsoftSupport();
     }
 
-    public static void AddCoreDatabase(this IServiceCollection serviceCollection,
+    public static void AddCoreDatabase(this IServiceCollection serviceCollection, IConfiguration configuration,
         string configurationName = "BlogConnectionString")
     {
         serviceCollection.AddDbContext<BlogContext>(options =>
         {
-            var connectionString = Configuration.GetConnectionString(configurationName);
+            var connectionString = configuration.GetConnectionString(configurationName);
             options.UseSqlServer(connectionString);
         });
     }
@@ -82,5 +82,22 @@ public static class ServiceCollectionExtensions
     public static void AddCoreAutoMapper(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddAutoMapper(typeof(IMapper), typeof(Features.Mapper));
+    }
+
+    public static void AddCoreLogging(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
+        var enableLogging = bool.Parse(configuration.GetConnectionString("Logging"));
+        if (enableLogging)
+        {
+            serviceCollection.AddApplicationInsightsTelemetry();
+            serviceCollection.AddLogging(config =>
+            {
+                config.AddApplicationInsights(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            });
+        }
+        else
+        {
+            serviceCollection.AddLogging(config => config.AddConsole());
+        }
     }
 }

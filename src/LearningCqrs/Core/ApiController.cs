@@ -5,9 +5,17 @@ namespace LearningCqrs.Core;
 
 public abstract class ApiController : ControllerBase
 {
+    protected readonly ILogger<ApiController> Logger;
+
+    public ApiController(ILogger<ApiController> logger)
+    {
+        Logger = logger;
+    }
+    
     public async Task<ActionResult> Execute<T>(Func<Task<T>> function)
         where T : ActionResult
     {
+        var error = "";
         try
         {
             var result = await function.Invoke();
@@ -15,11 +23,20 @@ public abstract class ApiController : ControllerBase
         }
         catch (ApiValidationException validationException)
         {
+            error = string.Join("\n", validationException.Failures.Select(e => e.PropertyName + ":" + e.ErrorMessage));
             return new BadRequestObjectResult(validationException.Failures);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return Problem(e.Message);
+            error = ex.ToString();
+            return Problem(ex.Message);
+        }
+        finally
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                Logger.LogError(error);
+            }
         }
     }
 }

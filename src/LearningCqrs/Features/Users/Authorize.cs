@@ -18,10 +18,12 @@ public class Authorize
     public class AuthorizeHandler : IRequestHandler<AuthorizeCommand, string>
     {
         private readonly IRepository<User> _repository;
+        private readonly IConfiguration _configuration;
 
-        public AuthorizeHandler(IRepository<User> repository)
+        public AuthorizeHandler(IRepository<User> repository, IConfiguration configuration)
         {
             _repository = repository;
+            _configuration = configuration;
         }
 
         public async Task<string> Handle(AuthorizeCommand request, CancellationToken cancellationToken)
@@ -42,10 +44,10 @@ public class Authorize
             };
 
             var securityKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetConnectionString("AppId")));
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetConnectionString("AppId")));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-            var tokenDescriptor = new JwtSecurityToken(Configuration.GetConnectionString("ValidIssuer"),
-                Configuration.GetConnectionString("ValidAudience"), claims, expires: DateTime.Now.AddHours(2),
+            var tokenDescriptor = new JwtSecurityToken(_configuration.GetConnectionString("ValidIssuer"),
+                _configuration.GetConnectionString("ValidAudience"), claims, expires: DateTime.Now.AddHours(2),
                 signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }

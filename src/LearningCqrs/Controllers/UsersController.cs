@@ -14,7 +14,7 @@ public class UsersController : ApiController
 {
     private readonly IMediator _mediator;
 
-    public UsersController(IMediator mediator)
+    public UsersController(ILogger<ApiController> logger, IMediator mediator) : base(logger)
     {
         _mediator = mediator;
     }
@@ -58,7 +58,7 @@ public class UsersController : ApiController
     }
     
     [HttpPost("query")]
-    public async Task<ActionResult> Query([FromBody] Query.QueryUserCommand queryPost,
+    public async Task<ActionResult> QueryUsers([FromBody] Query.QueryUserCommand queryPost,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>

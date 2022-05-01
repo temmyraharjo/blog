@@ -14,13 +14,13 @@ public class CategoriesController : ApiController
 {
     private readonly IMediator _mediator;
 
-    public CategoriesController(IMediator mediator)
+    public CategoriesController(ILogger<ApiController> logger, IMediator mediator) : base(logger)
     {
         _mediator = mediator;
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateUser([FromBody] Create.CreateCategoryCommand createCategoryCommand,
+    public async Task<ActionResult> CreateCategory([FromBody] Create.CreateCategoryCommand createCategoryCommand,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>
@@ -47,20 +47,9 @@ public class CategoriesController : ApiController
         });
     }
 
-    [HttpGet]
-    public async Task<ActionResult> GetTimeZones([FromQuery] GetCategory.GetCategoryQuery getCategoryQuery,
-        CancellationToken cancellationToken)
-    {
-        return await Execute(async () =>
-        {
-            var result = await _mediator.Send(getCategoryQuery, cancellationToken);
-            return Ok(result);
-        });
-    }
-
     [AllowAnonymous]
     [HttpPost("query")]
-    public async Task<ActionResult> Query([FromBody] Query.QueryCategoryCommand queryCategory,
+    public async Task<ActionResult> QueryCategories([FromBody] Query.QueryCategoryCommand queryCategory,
         CancellationToken cancellationToken)
     {
         return await Execute(async () =>

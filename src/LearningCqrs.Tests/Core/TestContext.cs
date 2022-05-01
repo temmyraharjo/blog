@@ -1,6 +1,8 @@
-﻿using LearningCqrs.Core;
+﻿using System.IO;
+using LearningCqrs.Core;
 using LearningCqrs.Data;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Sdk;
 
@@ -15,6 +17,12 @@ public class TestContext
     private IServiceCollection GetServiceCollection()
     {
         var serviceCollection = new ServiceCollection();
+        var configuration =   new ConfigurationBuilder()
+             .SetBasePath(Directory.GetCurrentDirectory())
+             .AddJsonFile("appsettings.json")
+             .Build();
+        serviceCollection.AddSingleton(typeof(IConfiguration), configuration);
+      
         serviceCollection.AddCore();
         serviceCollection.AddTestDatabase();
         serviceCollection.AddCoreAutoMapper();

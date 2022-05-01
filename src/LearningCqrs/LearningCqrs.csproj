@@ -12,6 +12,7 @@
         <PackageReference Include="FluentValidation" Version="10.4.0" />
         <PackageReference Include="MediatR" Version="10.0.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
@@ -31,6 +32,15 @@
     <ItemGroup>
         <Folder Include="Migrations" />
         <Folder Include="Notifications" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="appsettings.Development.json">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Content>
+      <Content Update="appsettings.json">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

@@ -2,9 +2,12 @@ using LearningCqrs.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCoreDatabase();
+var provider = builder.Services.BuildServiceProvider();
+var configuration = provider.GetService<IConfiguration>();
+
+builder.Services.AddCoreDatabase(configuration);
 builder.Services.AddCore();
-builder.Services.AddCoreAuthentication();
+builder.Services.AddCoreAuthentication(configuration);
 builder.Services.AddCoreAutoMapper();
 
 builder.Services.AddControllers()
@@ -13,11 +16,12 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCoreSwaggerGeneration();
+builder.Services.AddCoreLogging(configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-var enableSwagger = bool.Parse(app.Configuration.GetConnectionString("EnableSwagger"));
+var enableSwagger = bool.Parse(configuration.GetConnectionString("EnableSwagger"));
 if (enableSwagger)
 {
     app.UseSwagger();
