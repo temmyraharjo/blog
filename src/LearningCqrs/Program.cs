@@ -2,8 +2,11 @@ using LearningCqrs.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#pragma warning disable ASP0000
 var provider = builder.Services.BuildServiceProvider();
-var configuration = provider.GetService<IConfiguration>();
+#pragma warning restore ASP0000
+
+var configuration = provider.GetService<IConfiguration>() ?? throw new ArgumentNullException(nameof(IConfiguration));
 
 builder.Services.AddCoreDatabase(configuration);
 builder.Services.AddCore();
