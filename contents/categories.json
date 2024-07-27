@@ -1,0 +1,14 @@
+[
+    {
+        "label": "Tips",
+        "description": "Tips that you can follow based on real-world scenarios"
+    },
+    {
+        "label": "System Architecture",
+        "description": "System Architecture Design"
+    },
+    {
+        "label": "System Implementation",
+        "description": "System Implementation"
+    }
+]

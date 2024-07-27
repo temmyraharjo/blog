@@ -1,0 +1,15 @@
+[
+    {
+        "location": "/Posts/20240727/Blog Post 1.md",
+        "title": "Blog Post 1",
+        "description": "Lorem ipsum sit dolor amet",
+        "categories": [
+            "System Architecture",
+            "System Implementation"
+        ],
+        "tags": [
+            "#PowerPlatform",
+            "#Dataverse"
+        ]
+    }
+]

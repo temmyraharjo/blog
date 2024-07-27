@@ -1,0 +1,10 @@
+[
+    {
+        "label": "#PowerPlatform",
+        "description": "Microsoft Power Platform is a collection of low-code development tools that allows users to build custom business applications, automate workflows, and analyze data"
+    },
+    {
+        "label": "#Dataverse",
+        "description": "Microsoft Dataverse is a Cloud Database for Business Application."
+    }
+]
